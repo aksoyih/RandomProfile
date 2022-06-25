@@ -3,6 +3,7 @@ namespace Aksoyih\RandomProfile;
 
 class Human{
     private $faker;
+    private $helper;
 
     public $gender;
     public $name;
@@ -23,8 +24,10 @@ class Human{
     {
         $this->faker = $faker;
         $this->gender = $gender;
+
         $this->address = new Address($this->faker);
         $this->images = new Image($this->faker, $this->gender);
+        $this->helper = new Helper();
 
         $this->setName();
         $this->setSurname();
@@ -64,25 +67,25 @@ class Human{
 
         switch (rand(1,7)) {
             case 1:
-                $email = strtolower($this->replace_tr("{$this->name}.{$this->surname}@{$this->faker->randomElement($email_domain)}"));
+                $email = strtolower($this->helper->replace_tr("{$this->name}.{$this->surname}@{$this->faker->randomElement($email_domain)}"));
                 break;
             case 2:
-                $email = strtolower($this->replace_tr("{$this->name}.{$this->surname}.{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
+                $email = strtolower($this->helper->replace_tr("{$this->name}.{$this->surname}.{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
                 break;
             case 3:
-                $email = strtolower($this->replace_tr("{$this->name}_{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
+                $email = strtolower($this->helper->replace_tr("{$this->name}_{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
                 break;
             case 4:
-                $email = strtolower($this->replace_tr("{$this->surname}_{$this->name}@{$this->faker->randomElement($email_domain)}"));
+                $email = strtolower($this->helper->replace_tr("{$this->surname}_{$this->name}@{$this->faker->randomElement($email_domain)}"));
                 break;
             case 5:
-                $email = strtolower($this->replace_tr("{$this->surname}_{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
+                $email = strtolower($this->helper->replace_tr("{$this->surname}_{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
                 break;
             case 6:
-                $email = strtolower($this->replace_tr("{$this->name}-{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
+                $email = strtolower($this->helper->replace_tr("{$this->name}-{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
                 break;
             default:
-                $email = strtolower($this->replace_tr("{$this->address->city}_{$this->name}_{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
+                $email = strtolower($this->helper->replace_tr("{$this->address->city}_{$this->name}_{$this->address->city}@{$this->faker->randomElement($email_domain)}"));
         }
 
         $this->email = $email;
@@ -130,34 +133,27 @@ class Human{
     {
         switch (rand(1,7)) {
             case 1:
-                $username = strtolower($this->replace_tr("{$this->name}{$this->surname}"));
+                $username = strtolower($this->helper->replace_tr("{$this->name}{$this->surname}"));
                 break;
             case 2:
-                $username = strtolower($this->replace_tr("{$this->name}{$this->surname}.{$this->address->city}"));
+                $username = strtolower($this->helper->replace_tr("{$this->name}{$this->surname}.{$this->address->city}"));
                 break;
             case 3:
-                $username = strtolower($this->replace_tr("{$this->name}_{$this->address->city}".rand(1,99)));
+                $username = strtolower($this->helper->replace_tr("{$this->name}_{$this->address->city}".rand(1,99)));
                 break;
             case 4:
-                $username = strtolower($this->replace_tr("{$this->surname}_{$this->name}"));
+                $username = strtolower($this->helper->replace_tr("{$this->surname}_{$this->name}"));
                 break;
             case 5:
-                $username = strtolower($this->replace_tr("{$this->surname}_{$this->address->city}".rand(1,99)));
+                $username = strtolower($this->helper->replace_tr("{$this->surname}_{$this->address->city}".rand(1,99)));
                 break;
             case 6:
-                $username = strtolower($this->replace_tr("{$this->name}-{$this->address->city}"));
+                $username = strtolower($this->helper->replace_tr("{$this->name}-{$this->address->city}"));
                 break;
             default:
-                $username = strtolower($this->replace_tr("{$this->address->city}_{$this->name}".rand(1,99)));
+                $username = strtolower($this->helper->replace_tr("{$this->address->city}_{$this->name}".rand(1,99)));
         }
 
         return $username;
-    }
-
-    private function replace_tr($text) { //kudos: https://www.kodevreni.com/639-php-t%C3%BCrk%C3%A7e-karakterleri-ingilizceye-d%C3%B6n%C3%BC%C5%9Ft%C3%BCrme/
-        $text = trim($text);
-        $search = array('Ç','ç','Ğ','ğ','ı','İ','Ö','ö','Ş','ş','Ü','ü',' ');
-        $replace = array('c','c','g','g','i','i','o','o','s','s','u','u','-');
-        return str_replace($search,$replace,$text);
     }
 }
