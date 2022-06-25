@@ -1,6 +1,6 @@
 Random Profile Generator
 =============
-[![Github All Releases](https://img.shields.io/github/downloads/aksoyih/RandomProfile/total.svg)]()
+[![Latest Stable Version](http://poser.pugx.org/aksoyih/random-profile/v)](https://packagist.org/packages/aksoyih/random-profile) [![Total Downloads](http://poser.pugx.org/aksoyih/random-profile/downloads)](https://packagist.org/packages/aksoyih/random-profile) [![Latest Unstable Version](http://poser.pugx.org/aksoyih/random-profile/v/unstable)](https://packagist.org/packages/aksoyih/random-profile) [![License](http://poser.pugx.org/aksoyih/random-profile/license)](https://packagist.org/packages/aksoyih/random-profile) [![PHP Version Require](http://poser.pugx.org/aksoyih/random-profile/require/php)](https://packagist.org/packages/aksoyih/random-profile)
 
 Turkish profile generator
 
