@@ -22,6 +22,7 @@ class Human{
     public $address;
     public $images;
 
+
     public function __construct(\Faker\Generator $faker, $gender, $child = false)
     {
         $this->faker = $faker;
