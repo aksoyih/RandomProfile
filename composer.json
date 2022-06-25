@@ -1,14 +1,11 @@
 {
     "name": "aksoyih/random-profile",
     "description": "creates random profile with details",
-    "version": "1.0.0",
     "autoload": {
         "psr-4": {
             "Aksoyih\\RandomProfile\\": "src/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable" : true,
     "authors": [
         {
             "name": "haluk",
