@@ -17,12 +17,14 @@ class Human{
     public $networkInfo;
 
     public $address;
+    public $images;
 
     public function __construct(\Faker\Generator $faker, $gender)
     {
         $this->faker = $faker;
         $this->gender = $gender;
         $this->address = new Address($this->faker);
+        $this->images = new Image($this->faker, $this->gender);
 
         $this->setName();
         $this->setSurname();
