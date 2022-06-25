@@ -4,6 +4,7 @@ namespace Aksoyih\RandomProfile;
 class Image{
     private $faker;
     private $gender;
+    private $xgames_url;
 
     public $avatar;
     public $profile_picture;
@@ -13,7 +14,7 @@ class Image{
     {
         $this->faker = $faker;
         $this->gender = $gender;
-
+        $this->xgames_url = "https://xsgames.co/randomusers/avatar.php";
         $this->setAvatar();
         $this->setProfilePicture();
         $this->setPixelArt();
@@ -24,10 +25,10 @@ class Image{
     }
 
     public function setProfilePicture(){
-        $this->profile_picture = "https://xsgames.co/randomusers/avatar.php?g={$this->gender}";
+        $this->profile_picture = "{$this->xgames_url}?g={$this->gender}";
     }
 
     public function setPixelArt(){
-        $this->pixel_art = "https://xsgames.co/randomusers/avatar.php?g=pixel";
+        $this->pixel_art = "{$this->xgames_url}?g=pixel";
     }
 }
