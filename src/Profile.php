@@ -7,7 +7,6 @@ class Profile
 
     public $gender;
     public $human;
-
 	public function __construct($locale = "tr_TR", $gender = "unisex")
 	{
         $this->faker = \Faker\Factory::create($locale);

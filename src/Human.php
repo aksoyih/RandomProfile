@@ -9,10 +9,13 @@ class Human{
     public $surname;
     public $birthdate;
 
+    public $address;
+
     public function __construct(\Faker\Generator $faker, $gender)
     {
         $this->faker = $faker;
         $this->gender = $gender;
+        $this->address = new Address($this->faker);
 
         $this->getName();
         $this->getSurname();
