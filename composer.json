@@ -1,0 +1,19 @@
+{
+    "name": "aksoyih/random-profile",
+    "description": "creates random profile with details",
+    "autoload": {
+        "psr-4": {
+            "Aksoyih\\RandomProfile\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "haluk",
+            "email": "haluk@ihaksoy.com"
+        }
+    ],
+    "require": {
+		"php": ">=7.1.0",
+        "fakerphp/faker": "^1.19"
+	}
+}
