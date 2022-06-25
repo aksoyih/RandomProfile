@@ -3,8 +3,8 @@ namespace Aksoyih\RandomProfile;
 
 class Human{
     private $faker;
-    private $gender;
 
+    public $gender;
     public $name;
     public $surname;
     public $birthdate;

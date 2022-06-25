@@ -4,8 +4,8 @@ namespace Aksoyih\RandomProfile;
 class Profile
 {
 	private $faker;
+    private $gender;
 
-    public $gender;
     public $human;
 	public function __construct($locale = "tr_TR", $gender = "unisex")
 	{
