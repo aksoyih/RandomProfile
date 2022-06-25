@@ -10,7 +10,7 @@ class Address{
     public $city;
     public $district;
     public $street;
-    public $appartmentNumber;
+    public $apartmentNumber;
     public $postalCode;
     public $timeZone;
     public $coordinates;
@@ -39,11 +39,11 @@ class Address{
         $this->setCity();
         $this->setStreet();
         $this->setDistrict();
-        $this->setAppartmentNumber();
+        $this->setapartmentNumber();
         $this->setCoordinates($this->city);
         $this->setOpenstreetmapLink();
 
-        $this->fullAddress = "{$this->street} {$this->district} {$this->appartmentNumber} / {$this->postalCode} {$this->city}";
+        $this->fullAddress = "{$this->street} {$this->district} {$this->apartmentNumber} / {$this->postalCode} {$this->city}";
     }
 
     public function setStreet(){
@@ -58,8 +58,8 @@ class Address{
         $this->city = $this->helper->ucfirst($this->helper->strtolower($this->data[2]), 'UTF-8');
     }
 
-    public function setAppartmentNumber(){
-        $this->appartmentNumber = rand(1,99);
+    public function setapartmentNumber(){
+        $this->apartmentNumber = rand(1,99);
     }
 
     public function setPostalCode(){
