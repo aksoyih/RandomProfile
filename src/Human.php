@@ -11,7 +11,10 @@ class Human{
     public $age;
     public $titles;
     public $email;
+    public $phone;
     public $loginCredentials;
+    public $miscellaneous;
+    public $networkInfo;
 
     public $address;
 
@@ -26,7 +29,10 @@ class Human{
         $this->setBirthdate();
         $this->setTitles();
         $this->setEmail();
+        $this->setPhone();
         $this->setLoginCredentials();
+        $this->setMiscellaneous();
+        $this->setNetworkInfo();
     }
 
     public function setName(){
@@ -97,7 +103,28 @@ class Human{
         }
     }
 
-    public function createUsername(): string
+    public function setPhone(){
+        $this->phone['number'] = $this->faker->phoneNumber;
+        $this->phone['imei'] = $this->faker->imei;
+    }
+
+    public function setMiscellaneous(){
+        for($i = 1; $i <= rand(1,4); $i++){
+            $this->miscellaneous['favorite_emojis'][] = $this->faker->emoji;
+        }
+
+        $this->miscellaneous['language_code'] = $this->faker->languageCode;
+        $this->miscellaneous['country_code'] = $this->faker->countryCode;
+        $this->miscellaneous['locale_data'] = $this->faker->locale;
+        $this->miscellaneous['currency_code'] = $this->faker->currencyCode;
+    }
+
+    public function setNetworkInfo(){
+        $this->networkInfo['ipv_4'] = $this->faker->ipv4;
+        $this->networkInfo['ipv_6'] = $this->faker->ipv6;
+        $this->networkInfo['mac_address'] = $this->faker->macAddress;
+    }
+    private function createUsername(): string
     {
         switch (rand(1,7)) {
             case 1:
