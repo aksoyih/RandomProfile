@@ -16,6 +16,6 @@ class Profile
 	}
 
     public function json(){
-        return json_encode($this, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        return htmlspecialchars(json_encode($this, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     }
 }
