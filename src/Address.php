@@ -14,6 +14,7 @@ class Address{
     public $postalCode;
     public $timeZone;
     public $coordinates;
+    public $openstreetmap_link;
 
     public function __construct(\Faker\Generator $faker)
     {
@@ -39,7 +40,8 @@ class Address{
         $this->setStreet();
         $this->setDistrict();
         $this->setAppartmentNumber();
-        $this->getCoordinates($this->city);
+        $this->setCoordinates($this->city);
+        $this->setOpenstreetmapLink();
 
         $this->fullAddress = "{$this->street} {$this->district} {$this->appartmentNumber} / {$this->postalCode} {$this->city}";
     }
@@ -72,7 +74,7 @@ class Address{
         ];
     }
 
-    public function getCoordinates($city){
+    public function setCoordinates($city){
         $coordinateData = $this->helper->getCoordinateData();
 
         if(isset($coordinateData[$city])){
@@ -82,5 +84,10 @@ class Address{
             $this->coordinates['latitute'] = 0.00;
             $this->coordinates['longitute'] = 0.00;
         }
+    }
+
+    public function setOpenstreetmapLink()
+    {
+        $this->openstreetmap_link = "https://www.openstreetmap.org/?mlat={$this->coordinates['latitute']}&mlon={$this->coordinates['longitute']}";
     }
 }
