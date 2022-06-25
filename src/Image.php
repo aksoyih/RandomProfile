@@ -1,16 +1,32 @@
 <?php
+
 namespace Aksoyih\RandomProfile;
 
-class Image{
-    private $faker;
-    private $gender;
-    private $xgames_url;
+use Faker\Generator;
 
+class Image
+{
     public $avatar;
     public $profile_picture;
     public $pixel_art;
+    /**
+     * @var Generator
+     */
+    private $faker;
+    /**
+     * @var
+     */
+    private $gender;
+    /**
+     * @var string
+     */
+    private $xgames_url;
 
-    public function __construct(\Faker\Generator $faker, $gender)
+    /**
+     * @param Generator $faker
+     * @param $gender
+     */
+    public function __construct(Generator $faker, $gender)
     {
         $this->faker = $faker;
         $this->gender = $gender;
@@ -20,15 +36,27 @@ class Image{
         $this->setPixelArt();
     }
 
-    public function setAvatar(){
+    /**
+     * @return void
+     */
+    public function setAvatar()
+    {
         $this->avatar = "https://avatars.dicebear.com/api/personas/{$this->faker->userName}.jpg";
     }
 
-    public function setProfilePicture(){
+    /**
+     * @return void
+     */
+    public function setProfilePicture()
+    {
         $this->profile_picture = "{$this->xgames_url}?g={$this->gender}";
     }
 
-    public function setPixelArt(){
+    /**
+     * @return void
+     */
+    public function setPixelArt()
+    {
         $this->pixel_art = "{$this->xgames_url}?g=pixel";
     }
 }
