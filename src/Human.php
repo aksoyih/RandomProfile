@@ -16,28 +16,37 @@ class Human{
     public $loginCredentials;
     public $miscellaneous;
     public $networkInfo;
+    public $maritalInfo;
+    public $children;
 
     public $address;
     public $images;
 
-    public function __construct(\Faker\Generator $faker, $gender)
+    public function __construct(\Faker\Generator $faker, $gender, $child = false)
     {
         $this->faker = $faker;
         $this->gender = $gender;
 
-        $this->address = new Address($this->faker);
-        $this->images = new Image($this->faker, $this->gender);
         $this->helper = new Helper();
+
+        $this->address = new Address($this->faker);
 
         $this->setName();
         $this->setSurname();
         $this->setBirthdate();
-        $this->setTitles();
         $this->setEmail();
         $this->setPhone();
-        $this->setLoginCredentials();
-        $this->setMiscellaneous();
-        $this->setNetworkInfo();
+        $this->setTitles();
+
+        if(!$child){
+            $this->images = new Image($this->faker, $this->gender);
+
+            $this->setLoginCredentials();
+            $this->setMiscellaneous();
+            $this->setNetworkInfo();
+            $this->setMaritalInfo();
+            $this->setChildren();
+        }
     }
 
     public function setName(){
@@ -161,5 +170,71 @@ class Human{
         }
 
         return $username;
+    }
+
+    public function setMaritalInfo(){
+        $this->maritalInfo['status'] = $this->faker->randomElement(["married", "single", "divorced", "widowed"]);
+
+        if($this->age < 18){
+            $this->maritalInfo['status'] = "single";
+        }
+
+        if($this->maritalInfo['status'] == "married"){
+            if($this->gender == "male") $spouse_gender = "female"; else $spouse_gender = "male";
+            $spouse = new Human($this->faker, $spouse_gender, true);
+
+            if($spouse->age < 18){
+                $spouse->birthdate = $this->faker->dateTimeBetween($this->birthdate, "-18 years")->format("Y-m-d");
+                $spouse->age = floor((time() - strtotime($spouse->birthdate)) / 31556926);
+            }
+
+            $spouse->surname = $this->surname;
+
+            unset($spouse->titles, $spouse->loginCredentials, $spouse->miscellaneous, $spouse->networkInfo, $spouse->maritalInfo, $spouse->children, $spouse->images, $spouse->address);
+            $youngest_date = date("Y-m-d", min(strtotime($this->birthdate), strtotime($spouse->birthdate)));
+
+            $this->maritalInfo['marriage_date'] = $this->faker->dateTimeBetween(date("{$youngest_date} + 18 years"), 'now')->format("Y-m-d");
+            $this->maritalInfo['marriedFor'] = floor((time() - strtotime($this->maritalInfo['marriage_date'])) / 31556926);
+
+            $this->maritalInfo['spouse'] = $spouse;
+        }elseif ($this->maritalInfo['status'] == "divorced" || $this->maritalInfo['status'] == "widowed") {
+            $this->maritalInfo['marriage_date'] = $this->faker->dateTimeBetween(date("{$this->birthdate} + 18 years"), 'now')->format("Y-m-d");
+            $this->maritalInfo['divorce_date'] = $this->faker->dateTimeBetween(date("{$this->maritalInfo['marriage_date']}"), 'now')->format("Y-m-d");
+            $this->maritalInfo['marriedFor'] = floor((time() - strtotime($this->maritalInfo['divorce_date'])) / 31556926);
+        }
+    }
+
+    public function setChildren(){
+        if($this->maritalInfo['status'] != "single"){
+            if(strtotime($this->maritalInfo['marriage_date']) > strtotime("-9 months")) {
+                $this->children['count'] = 0;
+            }else{
+                $this->children['count'] = rand(0, rand(1, 3));
+            }
+        }else{
+            $this->children['count'] = 0;
+        }
+
+        if($this->children['count'] > 0){
+            for($i = 1; $i<=$this->children['count']; $i++){
+                $child = new Human($this->faker, $this->faker->randomElement(["male","female"]), true);
+                $child->surname = $this->surname;
+
+                $child->birthdate = $this->faker->dateTimeBetween("{$this->maritalInfo['marriage_date']}", 'now')->format("Y-m-d");
+
+                if($this->maritalInfo['status'] == "divorced" || $this->maritalInfo['status'] == "widowed"){
+                    $child->birthdate = $this->faker->dateTimeBetween("{$this->maritalInfo['marriage_date']}", "{$this->maritalInfo['divorce_date']}")->format("Y-m-d");
+                }
+
+                if($child->age <= 18){
+                    $child->address = $this->address;
+                }
+
+                $child->age = floor((time() - strtotime($child->birthdate)) / 31556926);
+
+                unset($child->titles, $child->loginCredentials, $child->miscellaneous, $child->networkInfo, $child->maritalInfo, $child->children, $child->images);
+                $this->children['children'][] = $child;
+            }
+        }
     }
 }
