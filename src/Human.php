@@ -110,6 +110,12 @@ class Human{
 
     public function setPhone(){
         $this->phone['number'] = $this->faker->phoneNumber;
+        $this->phone['device_operation_system'] = $this->faker->randomElement(["Android", "iOS"]);
+        if($this->phone['device_operation_system'] == "iOS"){
+            $this->phone['device'] = $this->faker->randomElement(["Apple iPhone 11", "Apple iPhone SE 2020", "Apple iPhone XR", "Apple iPhone 12", "Apple iPhone 8"]);
+        }else{
+            $this->phone['device'] = $this->faker->randomElement(["Google Pixel 2", "Samsung Galaxy S21 Ultra 5G", "Samsung Galaxy S20 Ultra", "Samsung Galaxy S20", "Samsung Galaxy S20+", "Samsung Galaxy A32 5G", "Samsung Galaxy S9"]);
+        }
         $this->phone['imei'] = $this->faker->imei;
     }
 
