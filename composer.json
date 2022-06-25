@@ -6,6 +6,7 @@
             "Aksoyih\\RandomProfile\\": "src/"
         }
     },
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "haluk",
