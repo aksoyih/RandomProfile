@@ -36,12 +36,21 @@ class Profile
     }
 
     /**
-     * @param $numberOfProfiles
+     * @param $numberOfProfiles Int
      * @return void
      */
     public function setNumberOfProfiles($numberOfProfiles)
     {
         $this->numberOfProfiles = $numberOfProfiles;
+    }
+
+    /**
+     * @param $gender String
+     * @return void
+     */
+    public function setGender($gender)
+    {
+        $this->gender = $gender;
     }
 
     /**
