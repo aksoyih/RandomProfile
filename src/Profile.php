@@ -24,14 +24,10 @@ class Profile
      */
     private $numberOfProfiles;
 
-    /**
-     * @param $locale
-     * @param $gender
-     */
-    public function __construct($locale = "tr_TR", $gender = null)
+    public function __construct()
     {
-        $this->faker = Factory::create($locale);
-        $this->gender = $gender;
+        $this->faker = Factory::create("tr_TR");
+        $this->gender = null;
         $this->setNumberOfProfiles(1);
     }
 
@@ -39,7 +35,7 @@ class Profile
      * @param $numberOfProfiles Int
      * @return void
      */
-    public function setNumberOfProfiles($numberOfProfiles)
+    public function setNumberOfProfiles(int $numberOfProfiles)
     {
         $this->numberOfProfiles = $numberOfProfiles;
     }
@@ -48,8 +44,12 @@ class Profile
      * @param $gender String
      * @return void
      */
-    public function setGender($gender)
+    public function setGender(string $gender)
     {
+        if(!in_array($gender, ["male", "female"])){
+            throw new \Error("setGender method expects either male or female as its only parameter");
+        }
+
         $this->gender = $gender;
     }
 
