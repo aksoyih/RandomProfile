@@ -40,9 +40,14 @@ Use `Aksoyih\RandomProfile\Profile()` to create and initialize a Profile instanc
 $profiles = new Aksoyih\RandomProfile\Profile();
 ```
 
-Optionally, use `setNumberOfProfiles()` method to specify how many profiles you want to create. If it is not used only one profile is created.
+Optionally, use `setNumberOfProfiles(int $n)` method to specify how many profiles you want to create. If it is not used only one profile is created.
 ```php
 $profiles->setNumberOfProfiles(3);
+```
+
+Optionally, use `setGender(string $gender)` method to specify the gender of the profile you want to create. The method can take either `male` or `female` value as its only parameter If it is not used the gender will be chosen randomly.
+```php
+$profiles->setGender("female");
 ```
 
 Use `createProfiles()` method to create given amount of profiles.
