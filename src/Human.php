@@ -438,6 +438,7 @@ class Human
         $this->bankAccount['iban'] = $this->faker->bankAccountNumber;
         $this->bankAccount['bic'] = $this->faker->swiftBicNumber;
         $this->bankAccount['bank'] = $this->faker->randomElement($this->helper->getBanks());
+        $this->bankAccount['currency'] = "TRY";
 
         $annual_income = 0;
         if(@$this->job->salary['annually']){
