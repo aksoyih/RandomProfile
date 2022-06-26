@@ -55,12 +55,9 @@ Finally, use `getProfiles()` method to get the created profiles.
 $profiles->getProfiles();
 ```
 
-##Example Profile
+## Example Profile
 
 ```json
-// 20220626132250
-// http://localhost/test/
-
 [
   {
     "gender": "female",
