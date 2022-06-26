@@ -37,6 +37,10 @@ class Profile
      */
     public function setNumberOfProfiles(int $numberOfProfiles)
     {
+        if(!is_int($numberOfProfiles)){
+            throw new \Error("setNumberOfProfiles method expects an integer as its only parameter", 1001);
+        }
+
         $this->numberOfProfiles = $numberOfProfiles;
     }
 
@@ -47,7 +51,7 @@ class Profile
     public function setGender(string $gender)
     {
         if(!in_array($gender, ["male", "female"])){
-            throw new \Error("setGender method expects either male or female as its only parameter");
+            throw new \Error("setGender method expects either male or female as its only parameter", 1002);
         }
 
         $this->gender = $gender;
