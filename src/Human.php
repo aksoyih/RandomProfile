@@ -19,6 +19,14 @@ class Human
      */
     public $surname;
     /**
+     * @var
+     */
+    public $tckn;
+    /**
+     * @var
+     */
+    public $serialNumber;
+    /**
      * @date
      */
     public $birthdate;
@@ -103,6 +111,7 @@ class Human
      * @array
      */
     public $address;
+    public $bankAccount;
     /**
      * avatar: String
      * profile_picture: String
@@ -110,6 +119,7 @@ class Human
      * @array
      */
     public $images;
+
 
     /**
      * @var Generator
@@ -140,6 +150,7 @@ class Human
         $this->setEmail();
         $this->setPhone();
         $this->setTitles();
+        $this->setTckn();
 
         if (!$child) {
             $this->images = new Image($this->faker, $this->gender);
@@ -149,6 +160,7 @@ class Human
             $this->setNetworkInfo();
             $this->setMaritalInfo();
             $this->setChildren();
+            $this->setBankAccount();
         }
     }
 
@@ -339,7 +351,7 @@ class Human
 
             $spouse->surname = $this->surname;
 
-            unset($spouse->titles, $spouse->loginCredentials, $spouse->miscellaneous, $spouse->networkInfo, $spouse->maritalInfo, $spouse->children, $spouse->images, $spouse->address);
+            unset($spouse->titles, $spouse->loginCredentials, $spouse->miscellaneous, $spouse->networkInfo, $spouse->maritalInfo, $spouse->children, $spouse->images, $spouse->address, $spouse->bankAccount);
             $youngest_date = date("Y-m-d", min(strtotime($this->birthdate), strtotime($spouse->birthdate)));
 
             $this->maritalInfo['marriage_date'] = $this->faker->dateTimeBetween(date("{$youngest_date} + 18 years"), 'now')->format("Y-m-d");
@@ -385,9 +397,28 @@ class Human
 
                 $child->age = floor((time() - strtotime($child->birthdate)) / 31556926);
 
-                unset($child->titles, $child->loginCredentials, $child->miscellaneous, $child->networkInfo, $child->maritalInfo, $child->children, $child->images);
+                unset($child->titles, $child->loginCredentials, $child->miscellaneous, $child->networkInfo, $child->maritalInfo, $child->children, $child->images, $child->bankAccount);
                 $this->children['children'][] = $child;
             }
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function setTckn(){
+        $this->tckn = $this->faker->tcNo;
+        $this->serialNumber = $this->faker->regexify('[A-Z0-9]{9}');
+    }
+
+    /**
+     * @return void
+     */
+    public function setBankAccount(){
+        $this->bankAccount['iban'] = $this->faker->bankAccountNumber;
+        $this->bankAccount['bic'] = $this->faker->swiftBicNumber;
+        $this->bankAccount['bank'] = $this->faker->randomElement($this->helper->getBanks());
+        $this->bankAccount['balance'] = $this->faker->randomFloat(2, -3000, 100000);
+        $this->bankAccount['debt'] = $this->faker->randomFloat(2, 0, 5000);
     }
 }
