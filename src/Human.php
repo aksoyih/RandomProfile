@@ -111,6 +111,14 @@ class Human
      * @array
      */
     public $address;
+    /**
+     * iban: String
+     * bic: String
+     * bank: String
+     * balance: Float
+     * debt: Float
+     * @array
+     */
     public $bankAccount;
     /**
      * avatar: String
@@ -119,6 +127,17 @@ class Human
      * @array
      */
     public $images;
+    /**
+     * workingStatus: String
+     * company: String
+     * position: String
+     * startDate: Date
+     * endDate: Date
+     * experience: Int
+     * salary: Float
+     * @array
+     */
+    public $job;
 
 
     /**
@@ -154,6 +173,7 @@ class Human
 
         if (!$child) {
             $this->images = new Image($this->faker, $this->gender);
+            $this->job = new Job($this->faker, $this->age);
 
             $this->setLoginCredentials();
             $this->setMiscellaneous();
@@ -351,7 +371,7 @@ class Human
 
             $spouse->surname = $this->surname;
 
-            unset($spouse->titles, $spouse->loginCredentials, $spouse->miscellaneous, $spouse->networkInfo, $spouse->maritalInfo, $spouse->children, $spouse->images, $spouse->address, $spouse->bankAccount);
+            unset($spouse->titles, $spouse->loginCredentials, $spouse->miscellaneous, $spouse->networkInfo, $spouse->maritalInfo, $spouse->children, $spouse->images, $spouse->address, $spouse->bankAccount, $spouse->job);
             $youngest_date = date("Y-m-d", min(strtotime($this->birthdate), strtotime($spouse->birthdate)));
 
             $this->maritalInfo['marriage_date'] = $this->faker->dateTimeBetween(date("{$youngest_date} + 18 years"), 'now')->format("Y-m-d");
@@ -397,7 +417,7 @@ class Human
 
                 $child->age = floor((time() - strtotime($child->birthdate)) / 31556926);
 
-                unset($child->titles, $child->loginCredentials, $child->miscellaneous, $child->networkInfo, $child->maritalInfo, $child->children, $child->images, $child->bankAccount);
+                unset($child->titles, $child->loginCredentials, $child->miscellaneous, $child->networkInfo, $child->maritalInfo, $child->children, $child->images, $child->bankAccount, $child->job);
                 $this->children['children'][] = $child;
             }
         }
@@ -418,7 +438,22 @@ class Human
         $this->bankAccount['iban'] = $this->faker->bankAccountNumber;
         $this->bankAccount['bic'] = $this->faker->swiftBicNumber;
         $this->bankAccount['bank'] = $this->faker->randomElement($this->helper->getBanks());
-        $this->bankAccount['balance'] = $this->faker->randomFloat(2, -3000, 100000);
-        $this->bankAccount['debt'] = $this->faker->randomFloat(2, 0, 5000);
+
+        $annual_income = 0;
+        if(@$this->job->salary['annually']){
+            $annual_income = $this->job->salary['annually'];
+        }
+
+        $this->bankAccount['balance'] = $this->faker->randomFloat(2, -30, $annual_income * 0.5);
+        $this->bankAccount['debt'] = $this->faker->randomFloat(2, 0, $annual_income * 0.15);
+
+        if($this->bankAccount['balance'] < 0){
+            $this->bankAccount['debt'] = $this->bankAccount['balance'] * -1;
+        }
+
+        if($this->age < 18){
+            $this->bankAccount['balance'] = 0;
+            $this->bankAccount['debt'] = 0;
+        }
     }
 }
