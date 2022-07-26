@@ -2,7 +2,6 @@
     "name": "aksoyih/random-profile",
     "description": "creates random profile with details",
     "minimum-stability": "dev",
-    "prefer-stable" : true,
     "autoload": {
         "psr-4": {
             "Aksoyih\\RandomProfile\\": "src/"
