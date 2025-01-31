@@ -1,0 +1,18 @@
+{
+    "name": "aksoyih/random-profile",
+    "description": "generate random user profiles with detailed information, tailored for Turkish data",
+    "require": {
+        "fakerphp/faker": "^1.24"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aksoyih\\RandomProfile\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Haluk Aksoy",
+            "email": "i.halukaksoy@gmail.com"
+        }
+    ]
+}
