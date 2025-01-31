@@ -4,6 +4,8 @@
 # Composer itself
 composer.phar
 
+composer.lock
+
 # PHPStorm project files
 .idea/
 
