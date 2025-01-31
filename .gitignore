@@ -1,3 +1,31 @@
+# Composer dependencies
 /vendor/
-/index.php
+
+# Composer itself
+composer.phar
+
+# PHPStorm project files
 .idea/
+
+# Node modules
+/node_modules/
+
+# Log files
+*.log
+
+# Cache directories
+/cache/
+/tmp/
+
+# Environment variables
+.env
+
+# PHPUnit
+.phpunit.result.cache
+
+# Coverage reports
+coverage/
+
+# User-specific files
+*.swp
+*.swo
