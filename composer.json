@@ -1,21 +1,49 @@
 {
     "name": "aksoyih/random-profile",
-    "description": "creates random profile with details",
-    "minimum-stability": "dev",
+    "description": "Generate random user profiles with detailed information, tailored for Turkish data",
+    "type": "library",
+    "require": {
+        "php": "^8.3",
+        "fakerphp/faker": "^1.24",
+        "symfony/validator": "^7.0",
+        "ramsey/uuid": "^4.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.10",
+        "friendsofphp/php-cs-fixer": "^3.40"
+    },
     "autoload": {
         "psr-4": {
             "Aksoyih\\RandomProfile\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Aksoyih\\RandomProfile\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
-            "name": "haluk",
-            "email": "haluk@ihaksoy.com"
+            "name": "Haluk Aksoy",
+            "email": "i.halukaksoy@gmail.com"
         }
     ],
-    "require": {
-		"php": ">=7.1.0",
-        "fakerphp/faker": "^1.19",
-      "ext-json": "*"
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test:coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html coverage",
+        "cs:check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "vendor/bin/php-cs-fixer fix",
+        "analyse": "vendor/bin/phpstan analyse",
+        "check": [
+            "@cs:check",
+            "@analyse",
+            "@test"
+        ]
     }
 }
