@@ -39,33 +39,43 @@ final class GeneratorPool
             $this->initializeGeneratorsWithFields($fields);
         }
         
-        // Calculate optimal batch size based on pool size
-        $batchSize = (int)ceil($count / $this->poolSize);
+        // Calculate chunk size for better memory management
+        $chunkSize = min(50, (int)ceil($count / $this->poolSize));
         $profiles = [];
+        $remainingCount = $count;
+        $generatorIndex = 0;
         
-        // Generate profiles in parallel batches
-        for ($i = 0; $i < $this->poolSize; $i++) {
-            $start = $i * $batchSize;
-            $currentBatchSize = min($batchSize, $count - $start);
+        while ($remainingCount > 0) {
+            $currentChunkSize = min($chunkSize, $remainingCount);
             
-            if ($currentBatchSize <= 0) {
-                break;
+            // Use generator in round-robin fashion
+            $generator = $this->generators[$generatorIndex];
+            $chunkProfiles = $generator->generateMultiple($currentChunkSize);
+            $profiles = array_merge($profiles, $chunkProfiles);
+            
+            $remainingCount -= $currentChunkSize;
+            $generatorIndex = ($generatorIndex + 1) % $this->poolSize;
+            
+            // Clear generator's local cache periodically
+            if ($remainingCount % 100 === 0) {
+                $generator->clearLocalCache();
             }
             
-            $generator = $this->generators[$i];
-            $batchProfiles = $generator->generateMultiple($currentBatchSize);
-            $profiles = array_merge($profiles, $batchProfiles);
+            // Force garbage collection if needed
+            if (memory_get_usage() > 67108864) { // 64MB
+                gc_collect_cycles();
+            }
         }
         
-        return array_slice($profiles, 0, $count);
+        return $profiles;
     }
 
     private function initializeGeneratorsWithFields(array $fields): void
     {
-        $this->generators = array_map(
-            fn() => new DynamicProfileGenerator($fields, $this->cache),
-            range(1, $this->poolSize)
-        );
+        // Reuse existing generators but update their fields
+        foreach ($this->generators as $i => $generator) {
+            $this->generators[$i] = new DynamicProfileGenerator($fields, $this->cache);
+        }
     }
 
     public function getCache(): ProfileCache

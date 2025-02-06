@@ -60,7 +60,11 @@ final class TcknValidator
         $digits[] = $digit11;
 
         $tckn = implode('', $digits);
-        self::validate($tckn);
+        try {
+            self::validate($tckn);
+        } catch (InvalidTcknException $e) {
+            return self::generate();
+        }
 
         return $tckn;
     }

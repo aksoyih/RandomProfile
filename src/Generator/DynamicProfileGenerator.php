@@ -14,6 +14,8 @@ final class DynamicProfileGenerator implements GeneratorInterface
     private ProfileCache $cache;
     /** @var array<string, array<string, mixed>> */
     private array $localCache = [];
+    private const MAX_LOCAL_CACHE_SIZE = 50;
+    private const BATCH_SIZE = 10;
 
     /**
      * @param array<string> $includedFields List of fields to include in the generated profile
@@ -35,29 +37,33 @@ final class DynamicProfileGenerator implements GeneratorInterface
         $fullProfile = $this->baseGenerator->generate()->jsonSerialize();
         $tckn = $fullProfile['tckn'];
         
-        // Use local cache first for better performance
+        // Use local cache with size limit
+        if (count($this->localCache) >= self::MAX_LOCAL_CACHE_SIZE) {
+            array_shift($this->localCache); // Remove oldest entry
+        }
         $this->localCache[$tckn] = $fullProfile;
         
-        // Add to shared cache if available
-        if ($this->cache) {
-            $this->cache->add($tckn, $fullProfile);
-        }
+        // Add to shared cache
+        $this->cache->add($tckn, $fullProfile);
         
         if (empty($this->includedFields)) {
             return $fullProfile;
         }
         
-        // Return fields in the specified order
+        return $this->filterFields($fullProfile);
+    }
+
+    /**
+     * @param array<string, mixed> $profile
+     * @return array<string, mixed>
+     */
+    private function filterFields(array $profile): array
+    {
         $filteredProfile = [];
         foreach ($this->includedFields as $field) {
-            if (isset($fullProfile[$field])) {
-                $filteredProfile[$field] = $fullProfile[$field];
+            if (isset($profile[$field])) {
+                $filteredProfile[$field] = $profile[$field];
             }
-        }
-        
-        // Clear local cache if it gets too large
-        if (count($this->localCache) > 100) {
-            $this->localCache = [];
         }
         return $filteredProfile;
     }
@@ -71,24 +77,21 @@ final class DynamicProfileGenerator implements GeneratorInterface
     public function generateMultiple(int $count): array
     {
         $profiles = [];
-        $batchSize = 20; // Process in smaller batches to manage memory
-
-        for ($i = 0; $i < $count; $i += $batchSize) {
-            $currentBatchSize = min($batchSize, $count - $i);
+        
+        for ($i = 0; $i < $count; $i += self::BATCH_SIZE) {
+            $currentBatchSize = min(self::BATCH_SIZE, $count - $i);
             
-            $batchProfiles = array_map(
-                fn() => $this->generate(),
-                range(1, $currentBatchSize)
-            );
+            // Pre-allocate array for better memory efficiency
+            $batchProfiles = [];
+            for ($j = 0; $j < $currentBatchSize; $j++) {
+                $batchProfiles[] = $this->generate();
+            }
             
             $profiles = [...$profiles, ...$batchProfiles];
             
-            // Clear local cache after each batch
-            $this->localCache = [];
-            
-            // Trigger garbage collection if memory usage is high
-            if (memory_get_usage() > 67108864) { // 64MB
-                gc_collect_cycles();
+            // Clear local cache after each batch to prevent memory bloat
+            if ($i % 50 === 0) {
+                $this->clearLocalCache();
             }
         }
 
@@ -108,9 +111,6 @@ final class DynamicProfileGenerator implements GeneratorInterface
         return $this->cache;
     }
 
-    /**
-     * Clear local cache manually if needed
-     */
     public function clearLocalCache(): void
     {
         $this->localCache = [];
