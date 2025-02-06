@@ -31,9 +31,14 @@ final class ProfileGenerator implements GeneratorInterface
         $this->jobGenerator = new JobGenerator();
     }
 
-    public function generate(): Profile
+    public function generate(?string $gender = null): Profile
     {
-        $gender = $this->faker->randomElement(['male', 'female']);
+        // If gender is not provided, choose randomly. Also validate if provided.
+        if ($gender !== null && !in_array($gender, ['male', 'female'], true)) {
+            throw new \InvalidArgumentException('Gender must be either "male" or "female"');
+        }
+        
+        $gender = $gender ?? $this->faker->randomElement(['male', 'female']);
         $name = $gender === 'male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale;
         $birthDate = $this->faker->dateTimeBetween('-80 years', '-18 years');
 
