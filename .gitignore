@@ -1,23 +1,24 @@
 # Composer dependencies
 /vendor/
 
-# Composer itself
-composer.phar
-
-composer.lock
+/composer.lock
 
 # PHPStorm project files
 .idea/
+/.vscode/
 
 # Node modules
 /node_modules/
 
 # Log files
 *.log
+*.cache
 
 # Cache directories
 /cache/
 /tmp/
+/.php-cs-fixer.cache
+/.phpunit.cache
 
 # Environment variables
 .env
@@ -26,8 +27,10 @@ composer.lock
 .phpunit.result.cache
 
 # Coverage reports
-coverage/
+/coverage/
 
 # User-specific files
 *.swp
 *.swo
+
+benchmark.php
