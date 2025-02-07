@@ -27,6 +27,15 @@ class RandomProfileFactoryTest extends TestCase
         $this->assertArrayHasKey('tckn', $profile);
     }
 
+    public function testGenerateWithSpecificGender(): void
+    {
+        $maleProfile = $this->factory->generate([], 'male');
+        $femaleProfile = $this->factory->generate([], 'female');
+
+        $this->assertEquals('male', $maleProfile['gender']);
+        $this->assertEquals('female', $femaleProfile['gender']);
+    }
+
     public function testGenerateMultipleProfiles(): void
     {
         $count = 5;
@@ -39,6 +48,24 @@ class RandomProfileFactoryTest extends TestCase
         $tckns = array_column($profiles, 'tckn');
         $uniqueTckns = array_unique($tckns);
         $this->assertCount($count, $uniqueTckns);
+    }
+
+    public function testGenerateMultipleProfilesWithGender(): void
+    {
+        $count = 5;
+        $maleProfiles = $this->factory->generateMultiple($count, [], 'male');
+        $femaleProfiles = $this->factory->generateMultiple($count, [], 'female');
+
+        $this->assertCount($count, $maleProfiles);
+        $this->assertCount($count, $femaleProfiles);
+
+        foreach ($maleProfiles as $profile) {
+            $this->assertEquals('male', $profile['gender']);
+        }
+
+        foreach ($femaleProfiles as $profile) {
+            $this->assertEquals('female', $profile['gender']);
+        }
     }
 
     public function testGeneratedProfileMatchesSchema(): void

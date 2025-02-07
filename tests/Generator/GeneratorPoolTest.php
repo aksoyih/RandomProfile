@@ -37,9 +37,42 @@ class GeneratorPoolTest extends TestCase
         $this->assertCount($count, $uniqueTckns);
         
         // Performance assertion - allow up to 8 seconds for 100 complex profiles
-        // This is more realistic given the amount of random data being generated
         $this->assertLessThan(8.0, $executionTime, 
             "Profile generation took {$executionTime} seconds, which exceeds the 8 second threshold");
+    }
+
+    #[Test]
+    public function testBulkGenerationWithGender(): void
+    {
+        $count = 50;
+        $maleProfiles = $this->pool->generateBulk($count, [], 'male');
+        $femaleProfiles = $this->pool->generateBulk($count, [], 'female');
+        
+        // Verify counts
+        $this->assertCount($count, $maleProfiles);
+        $this->assertCount($count, $femaleProfiles);
+        
+        // Verify genders
+        foreach ($maleProfiles as $profile) {
+            $this->assertEquals('male', $profile['gender']);
+        }
+        
+        foreach ($femaleProfiles as $profile) {
+            $this->assertEquals('female', $profile['gender']);
+        }
+        
+        // Verify spouse genders are opposite
+        foreach ($maleProfiles as $profile) {
+            if (isset($profile['maritalInfo']['spouse'])) {
+                $this->assertEquals('female', $profile['maritalInfo']['spouse']['gender']);
+            }
+        }
+        
+        foreach ($femaleProfiles as $profile) {
+            if (isset($profile['maritalInfo']['spouse'])) {
+                $this->assertEquals('male', $profile['maritalInfo']['spouse']['gender']);
+            }
+        }
     }
 
     #[Test]
@@ -55,6 +88,29 @@ class GeneratorPoolTest extends TestCase
         // Verify only requested fields are present
         foreach ($profiles as $profile) {
             $this->assertEquals($fields, array_keys($profile));
+        }
+    }
+
+    #[Test]
+    public function testBulkGenerationWithFieldsAndGender(): void
+    {
+        $count = 20;
+        $fields = ['name', 'gender', 'tckn'];
+        
+        $maleProfiles = $this->pool->generateBulk($count, $fields, 'male');
+        $femaleProfiles = $this->pool->generateBulk($count, $fields, 'female');
+        
+        $this->assertCount($count, $maleProfiles);
+        $this->assertCount($count, $femaleProfiles);
+        
+        foreach ($maleProfiles as $profile) {
+            $this->assertEquals($fields, array_keys($profile));
+            $this->assertEquals('male', $profile['gender']);
+        }
+        
+        foreach ($femaleProfiles as $profile) {
+            $this->assertEquals($fields, array_keys($profile));
+            $this->assertEquals('female', $profile['gender']);
         }
     }
 

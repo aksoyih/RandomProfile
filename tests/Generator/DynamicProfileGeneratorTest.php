@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Aksoyih\RandomProfile\Tests\Generator;
 
 use Aksoyih\RandomProfile\Generator\DynamicProfileGenerator;
+use Aksoyih\RandomProfile\Enum\Gender;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -49,6 +50,16 @@ class DynamicProfileGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function testGenerateWithSpecificGender(): void
+    {
+        $maleProfile = $this->generator->generate('male');
+        $femaleProfile = $this->generator->generate('female');
+        
+        $this->assertEquals('male', $maleProfile['gender']);
+        $this->assertEquals('female', $femaleProfile['gender']);
+    }
+
+    #[Test]
     public function testGenerateMultiple(): void
     {
         $count = 5;
@@ -60,6 +71,25 @@ class DynamicProfileGeneratorTest extends TestCase
         $tckns = array_column($profiles, 'tckn');
         $uniqueTckns = array_unique($tckns);
         $this->assertCount($count, $uniqueTckns);
+    }
+
+    #[Test]
+    public function testGenerateMultipleWithGender(): void
+    {
+        $count = 3;
+        $maleProfiles = $this->generator->generateMultiple($count, 'male');
+        $femaleProfiles = $this->generator->generateMultiple($count, 'female');
+
+        $this->assertCount($count, $maleProfiles);
+        $this->assertCount($count, $femaleProfiles);
+
+        foreach ($maleProfiles as $profile) {
+            $this->assertEquals('male', $profile['gender']);
+        }
+
+        foreach ($femaleProfiles as $profile) {
+            $this->assertEquals('female', $profile['gender']);
+        }
     }
 
     #[Test]
