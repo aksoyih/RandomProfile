@@ -31,9 +31,10 @@ final class GeneratorPool
     /**
      * @param int $count Number of profiles to generate
      * @param array<string> $fields Optional fields to include
+     * @param ?string $gender Optional specific gender (male/female)
      * @return array<int, array<string, mixed>>
      */
-    public function generateBulk(int $count, array $fields = []): array
+    public function generateBulk(int $count, array $fields = [], ?string $gender = null): array
     {
         if (!empty($fields)) {
             $this->initializeGeneratorsWithFields($fields);
@@ -50,7 +51,7 @@ final class GeneratorPool
             
             // Use generator in round-robin fashion
             $generator = $this->generators[$generatorIndex];
-            $chunkProfiles = $generator->generateMultiple($currentChunkSize);
+            $chunkProfiles = $generator->generateMultiple($currentChunkSize, $gender);
             $profiles = array_merge($profiles, $chunkProfiles);
             
             $remainingCount -= $currentChunkSize;

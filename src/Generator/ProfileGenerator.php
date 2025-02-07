@@ -31,9 +31,9 @@ final class ProfileGenerator implements GeneratorInterface
         $this->jobGenerator = new JobGenerator();
     }
 
-    public function generate(): Profile
+    public function generate(?string $gender = null): Profile
     {
-        $gender = $this->faker->randomElement(['male', 'female']);
+        $gender = $gender ?? $this->faker->randomElement(['male', 'female']);
         $name = $gender === 'male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale;
         $birthDate = $this->faker->dateTimeBetween('-80 years', '-18 years');
 
@@ -51,7 +51,7 @@ final class ProfileGenerator implements GeneratorInterface
             loginCredentials: $this->loginCredentialsGenerator->generate(),
             miscellaneous: $this->generateMiscellaneous(),
             networkInfo: $this->generateNetworkInfo(),
-            maritalInfo: $this->generateMaritalInfo(),
+            maritalInfo: $this->generateMaritalInfo($gender),
             children: $this->generateChildren(),
             address: $this->addressGenerator->generate(),
             bankAccount: $this->bankAccountGenerator->generate(),
@@ -89,7 +89,7 @@ final class ProfileGenerator implements GeneratorInterface
     /**
      * @return array<string, mixed>
      */
-    private function generateMaritalInfo(): array
+    private function generateMaritalInfo(string $gender): array
     {
         $isMarried = $this->faker->boolean(70);
         if (!$isMarried) {
@@ -100,18 +100,22 @@ final class ProfileGenerator implements GeneratorInterface
             'status' => 'married',
             'marriage_date' => $this->faker->date(),
             'marriedFor' => random_int(1, 40),
-            'spouse' => $this->generateSpouse(),
+            'spouse' => $this->generateSpouse($gender),
         ];
     }
 
     /**
      * @return array<string, mixed>
      */
-    private function generateSpouse(): array
+    private function generateSpouse(string $gender): array
     {
+        // Generate opposite gender for spouse
+        $spouseGender = $gender === 'male' ? 'female' : 'male';
+        $name = $spouseGender === 'male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale;
+        
         return [
-            'gender' => 'male',
-            'name' => $this->faker->firstNameMale,
+            'gender' => $spouseGender,
+            'name' => $name,
             'surname' => $this->faker->lastName,
             'tckn' => TcknValidator::generate(),
             'serialNumber' => $this->faker->regexify('[A-Z0-9]{9}'),

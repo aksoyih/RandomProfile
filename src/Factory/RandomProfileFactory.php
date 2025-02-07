@@ -28,16 +28,17 @@ final class RandomProfileFactory
      * Generate a single random profile
      * 
      * @param array<string> $fields Optional specific fields to include
+     * @param ?string $gender Optional specific gender (male/female)
      * @return array<string, mixed>
      */
-    public function generate(array $fields = []): array
+    public function generate(array $fields = [], ?string $gender = null): array
     {
         if (empty($fields)) {
-            return $this->generator->generate()->jsonSerialize();
+            return $this->generator->generate($gender)->jsonSerialize();
         }
 
         $dynamicGenerator = new DynamicProfileGenerator($fields, $this->cache);
-        return $dynamicGenerator->generate();
+        return $dynamicGenerator->generate($gender);
     }
 
     /**
@@ -45,22 +46,24 @@ final class RandomProfileFactory
      * 
      * @param int $count Number of profiles to generate
      * @param array<string> $fields Optional specific fields to include
+     * @param ?string $gender Optional specific gender (male/female)
      * @param bool $usePool Whether to use the generator pool for parallel generation
      * @return array<int, array<string, mixed>>
      */
     public function generateMultiple(
         int $count,
         array $fields = [],
+        ?string $gender = null,
         bool $usePool = true
     ): array {
         // Use pool for larger batches
         if ($usePool && $count > $this->batchThreshold) {
-            return $this->pool->generateBulk($count, $fields);
+            return $this->pool->generateBulk($count, $fields, $gender);
         }
 
         // Use optimized dynamic generator for smaller batches
         $dynamicGenerator = new DynamicProfileGenerator($fields, $this->cache);
-        $result = $dynamicGenerator->generateMultiple($count);
+        $result = $dynamicGenerator->generateMultiple($count, $gender);
         
         // Clean up after generation
         $dynamicGenerator->clearLocalCache();

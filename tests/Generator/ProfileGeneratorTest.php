@@ -6,6 +6,7 @@ namespace Aksoyih\RandomProfile\Tests\Generator;
 
 use Aksoyih\RandomProfile\Generator\ProfileGenerator;
 use Aksoyih\RandomProfile\Data\Profile;
+use Aksoyih\RandomProfile\Enum\Gender;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -24,6 +25,20 @@ class ProfileGeneratorTest extends TestCase
         $profile = $this->generator->generate();
         
         $this->assertInstanceOf(Profile::class, $profile);
+    }
+
+    #[Test]
+    public function testGenerateWithSpecificGender(): void
+    {
+        $maleProfile = $this->generator->generate('male');
+        $femaleProfile = $this->generator->generate('female');
+        
+        $this->assertEquals('male', $maleProfile->jsonSerialize()['gender']);
+        $this->assertEquals('female', $femaleProfile->jsonSerialize()['gender']);
+        
+        // Test that spouse gender is opposite
+        $this->assertEquals('female', $maleProfile->jsonSerialize()['maritalInfo']['spouse']['gender'] ?? null);
+        $this->assertEquals('male', $femaleProfile->jsonSerialize()['maritalInfo']['spouse']['gender'] ?? null);
     }
 
     #[Test]

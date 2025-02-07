@@ -32,9 +32,9 @@ final class DynamicProfileGenerator implements GeneratorInterface
         $this->cache = $cache ?? new ProfileCache();
     }
 
-    public function generate(): array
+    public function generate(?string $gender = null): array
     {
-        $fullProfile = $this->baseGenerator->generate()->jsonSerialize();
+        $fullProfile = $this->baseGenerator->generate($gender)->jsonSerialize();
         $tckn = $fullProfile['tckn'];
         
         // Use local cache with size limit
@@ -72,9 +72,10 @@ final class DynamicProfileGenerator implements GeneratorInterface
      * Optimized bulk generation method
      * 
      * @param int $count Number of profiles to generate
+     * @param ?string $gender Optional specific gender (male/female)
      * @return array<int, array<string, mixed>>
      */
-    public function generateMultiple(int $count): array
+    public function generateMultiple(int $count, ?string $gender = null): array
     {
         $profiles = [];
         
@@ -84,7 +85,7 @@ final class DynamicProfileGenerator implements GeneratorInterface
             // Pre-allocate array for better memory efficiency
             $batchProfiles = [];
             for ($j = 0; $j < $currentBatchSize; $j++) {
-                $batchProfiles[] = $this->generate();
+                $batchProfiles[] = $this->generate($gender);
             }
             
             $profiles = [...$profiles, ...$batchProfiles];
